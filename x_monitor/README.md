@@ -41,7 +41,7 @@ Edit `config.yaml` to add/remove accounts and keyword searches. Set `tier: hot` 
 
 ## Running Locally
 
-The script auto-loads `.env` files via `python-dotenv`. It checks `targeted_marketing/.env` first, then the repo root `.env`.
+The script auto-loads `.env` files via `python-dotenv`. It checks `x_monitor/.env` first, then the repo root `.env`.
 
 ```bash
 pip install -r requirements.txt

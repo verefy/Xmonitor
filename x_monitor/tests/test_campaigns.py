@@ -4,7 +4,7 @@ from datetime import date
 
 import pytest
 
-from targeted_marketing.monitor import get_active_campaign_phases
+from x_monitor.monitor import get_active_campaign_phases
 
 
 def _make_campaign(name="Test Campaign", phases=None):

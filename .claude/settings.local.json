@@ -1,9 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python targeted_marketing/monitor.py:*)",
+      "Bash(python x_monitor/monitor.py:*)",
       "WebSearch",
-      "WebFetch(domain:x.com)"
+      "WebFetch(domain:x.com)",
+      "Bash(git mv:*)",
+      "Bash(python -c:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(python:*)"
     ]
   }
 }

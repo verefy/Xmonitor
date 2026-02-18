@@ -1,6 +1,6 @@
 """
 Config validation test for the X Monitor.
-Run: python targeted_marketing/test_config.py
+Run: python x_monitor/test_config.py
 """
 
 from datetime import date
