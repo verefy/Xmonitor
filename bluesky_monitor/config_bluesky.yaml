@@ -4,7 +4,7 @@ settings:
   min_likes_accounts: 3
   min_likes_search: 5
   email_to: "filipe.altoe@verefy.ai"
-  email_from: "Verefy Bluesky Monitor <monitor-bluesky@verefy.ai>"
+  email_from: "Verefy Bluesky Monitor <digest@buzarchitect.ai>"
 
 relevance_keywords:
   - "disinformation"
