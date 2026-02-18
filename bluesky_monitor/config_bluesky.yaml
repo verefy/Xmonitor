@@ -1,0 +1,46 @@
+settings:
+  lookback_hours_daily: 26
+  lookback_hours_hot: 13
+  min_likes_accounts: 3
+  min_likes_search: 5
+  email_to: "filipe.altoe@verefy.ai"
+  email_from: "Verefy Bluesky Monitor <monitor-bluesky@verefy.ai>"
+
+relevance_keywords:
+  - "disinformation"
+  - "misinformation"
+  - "misinfo"
+  - "disinfo"
+  - "false claim"
+  - "fake news"
+  - "fact-check"
+  - "fact check"
+  - "deepfake"
+  - "content moderation"
+  - "trust and safety"
+  - "trust & safety"
+  - "platform integrity"
+  - "prebunking"
+  - "debunking"
+  - "Digital Services Act"
+  - "DSA"
+  - "EDMO"
+  - "election integrity"
+  - "desinformação"
+  - "coordinated inauthentic"
+  - "explainability"
+  - "computational propaganda"
+
+groups:
+  - name: "Disinformation Researchers (Test)"
+    tier: daily
+    description: >
+      Test group — verify account fetching and keyword search work correctly.
+    accounts:
+      - username: stamos.org
+        label: "Alex Stamos (Corridor, ex-Stanford)"
+    keyword_searches:
+      - query: "disinformation detection AI"
+        min_likes: 3
+
+campaigns: []
