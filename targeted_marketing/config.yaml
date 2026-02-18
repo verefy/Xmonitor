@@ -1,0 +1,521 @@
+# Verefy X Monitor — Configuration
+# ====================================
+# Edit this file to add/remove accounts and keyword searches.
+# Changes take effect on the next scheduled run (no code changes needed).
+#
+# HOW IT WORKS:
+# - Account posts are fetched via `from:username since:<date>` (no keyword filtering)
+# - Keyword searches run across ALL of X using `advanced_search`
+# - Posts are deduped across all groups
+# - Digest email organizes results by group with descriptions as reply guidance
+#
+# TIER SYSTEM:
+# - "hot" groups run 2x/day (morning + evening) — time-sensitive opportunities
+# - "daily" groups run 1x/day at 13:00 UTC — general monitoring
+# - Full run processes ALL groups; hot run only processes tier: hot
+#
+# ACCOUNT HANDLE VERIFICATION:
+# Handles marked [VERIFY] need confirmation before first deploy.
+# After first run, check which accounts returned zero results — those
+# likely have wrong handles. Fix and push.
+
+settings:
+  lookback_hours_daily: 26
+  lookback_hours_hot: 13
+  min_likes_accounts: 5
+  min_likes_search: 20
+  email_to: "filipe.altoe@verefy.ai"
+  email_from: "Verefy Bot <digest@buzarchitect.ai>"
+
+# Relevance keywords — account posts are only included if they contain
+# at least one of these (case-insensitive). Keyword search results skip
+# this filter since they're already topic-filtered by the query.
+#
+# KEEP THESE SPECIFIC. Generic terms like "AI", "news", "social media"
+# cause massive false positives. If an account's general posts aren't
+# relevant, remove the account — don't try to filter with broad keywords.
+relevance_keywords:
+  # Core domain
+  - "disinformation"
+  - "misinformation"
+  - "misinfo"
+  - "disinfo"
+  - "false claim"
+  - "fake news"
+  - "fact-check"
+  - "fact check"
+  - "factcheck"
+  - "deepfake"
+  - "deep fake"
+  - "synthetic media"
+  - "AI-generated"
+  - "coordinated inauthentic"
+  - "information operation"
+  - "info ops"
+  - "information warfare"
+  - "foreign interference"
+  # Platform and moderation
+  - "content moderation"
+  - "trust and safety"
+  - "trust & safety"
+  - "platform integrity"
+  - "platform governance"
+  - "algorithmic amplification"
+  # Detection and verification
+  - "claim detection"
+  - "claim verification"
+  - "automated verification"
+  - "viral prediction"
+  - "virality"
+  - "early warning"
+  - "prebunking"
+  - "debunking"
+  - "narrative detection"
+  # Regulatory
+  - "Digital Services Act"
+  - "DSA"
+  - "AI Act"
+  - "EDMO"
+  - "election integrity"
+  - "election interference"
+  # Impact
+  - "brand attack"
+  - "reputational risk"
+  - "stock manipulation"
+  - "impersonation"
+  # Research
+  - "explainability"
+  - "XAI"
+  - "computational propaganda"
+  # Portuguese / Brazilian
+  - "desinformação"
+  - "verificação"
+  - "notícia falsa"
+
+groups:
+  # ===================================================================
+  # GROUP 1: Disinformation Researchers & Academics
+  # ===================================================================
+  - name: "Disinformation Researchers & Academics"
+    tier: daily
+    description: >
+      Reply when they discuss detection methods, platform accountability,
+      or research findings. Your angle: researcher-to-researcher. Cite
+      your IJCAI/UMAP work. Add perspective on the intervention gap
+      (detection alone isn't enough — you need prediction + verification
+      + response generation). Never sell — contribute expertise.
+    accounts:
+      - username: DFRLab
+        label: Atlantic Council Digital Forensic Research Lab
+      - username: clairewardle
+        label: "Claire Wardle (First Draft founder)"           # [VERIFY]
+      - username: CraigSilverman
+        label: "Craig Silverman (ProPublica, misinfo reporter)" # [VERIFY]
+      - username: alexstamos
+        label: "Alex Stamos (Stanford Internet Observatory)"
+      - username: kate_starbird
+        label: "Kate Starbird (UW, crisis informatics)"         # [VERIFY]
+      - username: samanthabradshaw
+        label: "Samantha Bradshaw (Oxford Internet Institute)"  # [VERIFY]
+      - username: ShortBenShort
+        label: "Ben Nimmo (Meta, formerly DFRLab)"              # [VERIFY]
+      - username: juliapossetti
+        label: "Julie Posetti (ICFJ)"                          # [VERIFY]
+    keyword_searches:
+      - query: "disinformation detection AI"
+        min_likes: 10
+      - query: "automated fact checking research"
+        min_likes: 10
+      - query: "misinformation spread prediction"
+        min_likes: 5
+      - query: "viral misinformation early detection"
+        min_likes: 5
+      - query: "explainable AI fact checking"
+        min_likes: 3
+      - query: "computational propaganda detection"
+        min_likes: 5
+
+  # ===================================================================
+  # GROUP 2: EU Policy & Regulation
+  # ===================================================================
+  - name: "EU Policy & Regulation"
+    tier: daily
+    description: >
+      Engage when DSA enforcement, EDMO developments, or AI Act
+      implications for content moderation are discussed. Your angle:
+      regulatory alignment — Verefy is building the technology the
+      regulation envisions. Position as European deep-tech aligned
+      with EU values. Don't be partisan — be technical.
+    accounts:
+      - username: EU_Commission
+        label: European Commission
+      - username: EUDisinfoLab
+        label: EU DisinfoLab
+      - username: EDMObservatory
+        label: "European Digital Media Observatory"             # [VERIFY]
+      - username: VeraJourova
+        label: "Vera Jourova (EU VP Values & Transparency)"     # [VERIFY]
+      - username: ThierryBreton
+        label: "Thierry Breton (former EU Commissioner)"        # [VERIFY]
+    keyword_searches:
+      - query: "Digital Services Act enforcement 2026"
+        min_likes: 10
+      - query: "EDMO disinformation"
+        min_likes: 5
+      - query: "AI Act content moderation"
+        min_likes: 10
+      - query: "EU election integrity disinformation"
+        min_likes: 5
+      - query: "DSA platform compliance"
+        min_likes: 10
+
+  # ===================================================================
+  # GROUP 3: Journalism & Media
+  # ===================================================================
+  - name: "Journalism & Media"
+    tier: daily
+    description: >
+      Reply when journalists discuss fact-checking tools, newsroom
+      technology, AI in journalism, or misinformation challenges.
+      Your angle: practitioner empathy — you work with Polígrafo,
+      you understand newsroom constraints. Speak their language
+      (editorial workflow, time pressure, verification standards).
+    accounts:
+      - username: Poynter
+        label: Poynter Institute
+      - username: factchecknet
+        label: "International Fact-Checking Network (IFCN)"     # [VERIFY]
+      - username: RSF_en
+        label: "Reporters Without Borders"
+      - username: pressfreedom
+        label: "Committee to Protect Journalists"               # [VERIFY]
+      - username: AFPFactCheck
+        label: "AFP Fact Check"                                 # [VERIFY]
+      - username: FullFact
+        label: "Full Fact (UK)"
+      - username: Poligrafo_PT
+        label: "Polígrafo (partner — Fernando's platform)"      # [VERIFY]
+    keyword_searches:
+      - query: "newsroom fact checking tool AI"
+        min_likes: 5
+      - query: "AI journalism verification"
+        min_likes: 5
+      - query: "fact checker overwhelmed volume"
+        min_likes: 3
+      - query: "automated claim verification news"
+        min_likes: 5
+      - query: "IFCN fact checking"
+        min_likes: 5
+
+  # ===================================================================
+  # GROUP 4: Trust & Safety Professionals
+  # ===================================================================
+  - name: "Trust & Safety Professionals"
+    tier: daily
+    description: >
+      Engage when platform T&S leaders or practitioners discuss
+      content moderation at scale, detection latency, or limits of
+      platform-side solutions. Your angle: enterprise-side defense
+      COMPLEMENTS platform moderation. You're not attacking platforms
+      — you're solving what they can't (protecting specific orgs
+      proactively).
+    accounts:
+      - username: yaborel
+        label: "Yoel Roth (former Twitter T&S)"                 # [VERIFY]
+      - username: evelyndouek
+        label: "Evelyn Douek (Stanford, platform governance)"   # [VERIFY]
+      - username: daborellekeller
+        label: "Daphne Keller (Stanford, platform regulation)"  # [VERIFY]
+    keyword_searches:
+      - query: "trust safety content moderation scale"
+        min_likes: 10
+      - query: "platform response time misinformation hours"
+        min_likes: 5
+      - query: "content moderation AI scaling challenge"
+        min_likes: 10
+      - query: "platform transparency report misinfo"
+        min_likes: 10
+
+  # ===================================================================
+  # GROUP 5: Competitor Accounts  [DAILY]
+  # ===================================================================
+  - name: "Competitor Accounts"
+    tier: daily
+    description: >
+      Track competitor announcements, partnerships, funding rounds,
+      and positioning shifts. Do NOT reply to competitor posts —
+      monitor only. Flag any competitor entering the prediction +
+      verification + intervention space Verefy occupies.
+    accounts:
+      - username: logaboricallyai
+        label: "Logically.AI ($15M/yr, direct competitor)"      # [VERIFY]
+      - username: newswhip
+        label: "NewsWhip ($11.8M/yr, closest to fact-checking)" # [VERIFY]
+      - username: blackbird_ai
+        label: "Blackbird.AI (enterprise brand protection)"     # [VERIFY]
+    keyword_searches: []
+
+  # ===================================================================
+  # GROUP 6: Competitor & Market Intelligence  [HOT — 2x/day]
+  # ===================================================================
+  - name: "Competitor & Market Intelligence"
+    tier: hot
+    description: >
+      Track competitor product launches, funding, and market moves.
+      Also captures new entrants. Do NOT reply — intelligence only.
+      Feed insights into investor updates and positioning.
+    keyword_searches:
+      - query: "Logically AI disinformation"
+        min_likes: 3
+      - query: "Meltwater misinformation monitoring"
+        min_likes: 5
+      - query: "NewsWhip fact check"
+        min_likes: 3
+      - query: "Blackbird AI brand protection"
+        min_likes: 3
+      - query: "disinformation detection startup funding"
+        min_likes: 5
+      - query: "misinfo detection platform launch"
+        min_likes: 3
+      - query: "disinformation SaaS enterprise"
+        min_likes: 5
+
+  # ===================================================================
+  # GROUP 7: Enterprise Brand Attacks & Incidents  [HOT — 2x/day]
+  # ===================================================================
+  - name: "Enterprise Brand Attacks & Incidents"
+    tier: hot
+    description: >
+      Real-time incidents of disinformation targeting enterprises or
+      public figures. These are CONTENT OPPORTUNITIES — post retrospective
+      analysis showing the detection window that matters. Be analytical
+      and empathetic, NEVER opportunistic. Frame as "here's what research
+      tells us about incidents like this" not "you should have used our
+      product."
+    accounts: []
+    keyword_searches:
+      - query: "fake tweet stock price drop"
+        min_likes: 10
+      - query: "disinformation brand attack company"
+        min_likes: 10
+      - query: "false claim company stock market"
+        min_likes: 10
+      - query: "impersonation account brand verified"
+        min_likes: 5
+      - query: "coordinated inauthentic behavior targeting"
+        min_likes: 5
+      - query: "deepfake CEO executive"
+        min_likes: 5
+      - query: "fake news company reputation damage"
+        min_likes: 10
+      - query: "misinformation pharmaceutical brand"
+        min_likes: 10
+
+  # ===================================================================
+  # GROUP 8: Self-Mentions & Brand  [HOT — 2x/day]
+  # ===================================================================
+  - name: "Self-Mentions & Brand"
+    tier: hot
+    description: >
+      Any mention of Verefy, Filipe, or related coverage. Respond to
+      EVERYTHING — positive mentions get a thank-you, questions get a
+      direct answer, criticism gets a thoughtful response. This is
+      reputation management.
+    accounts: []
+    keyword_searches:
+      - query: "Verefy"
+        min_likes: 0
+      - query: "verefy.ai"
+        min_likes: 0
+      - query: "Filipe Altoe disinformation"
+        min_likes: 0
+      - query: "Polígrafo AI fact checking tool"
+        min_likes: 0
+      - query: "INESC-ID disinformation detection"
+        min_likes: 0
+
+# ===================================================================
+# SPECIAL CAMPAIGNS
+# ===================================================================
+# Time-bounded monitoring that auto-activates and deactivates.
+# The script checks today's date against each phase's window.
+# Only active phases are included in the run. Future/expired phases
+# are silently skipped.
+#
+# Add new campaigns here — they sit dormant until their start date.
+
+campaigns:
+
+  # -----------------------------------------------------------------
+  # PhD Defense & LinkedIn Launch (Q2 2026)
+  # -----------------------------------------------------------------
+  # UPDATE start/end dates when defense date is confirmed.
+  # This is a content event: "I just defended my PhD, here's what
+  # I'm building" is the highest-leverage LinkedIn post.
+  - name: "PhD Defense & LinkedIn Launch"
+    description: >
+      Post-defense: activate full LinkedIn strategy. Publish the origin
+      story, update all profiles, shift from researcher to CEO + researcher.
+    phases:
+      - name: "Post-defense activation"
+        start: "2026-06-01"          # PLACEHOLDER — update when confirmed
+        end: "2026-06-14"
+        tier: hot
+        manual_tasks:
+          - task: "Update LinkedIn headline to CEO & Chief Scientist at Verefy"
+            frequency: "Once, day of defense"
+          - task: "Publish 'I defended my PhD, here's what I'm building' LinkedIn post"
+            frequency: "Once, day after defense"
+          - task: "Update X bio to include Verefy CEO prominently"
+            frequency: "Once, day of defense"
+          - task: "Pin Eli Lilly / Verefy origin thread on X"
+            frequency: "Once, day after defense"
+          - task: "Send personal messages to key LinkedIn connections about Verefy"
+            frequency: "Over first week"
+        keyword_searches:
+          - query: "Filipe Altoe PhD"
+            min_likes: 0
+          - query: "Verefy launch"
+            min_likes: 0
+
+  # -----------------------------------------------------------------
+  # Web Summit 2026 (November, Lisbon)
+  # -----------------------------------------------------------------
+  # Business plan allocates €10K for Web Summit Y1.
+  # UPDATE dates when Web Summit 2026 dates are announced.
+  - name: "Web Summit 2026"
+    description: >
+      Lisbon flagship tech conference. Network with investors, enterprise
+      buyers, and media. Position Verefy as European deep-tech building
+      from Lisbon.
+    phases:
+      - name: "Pre-event buzz"
+        start: "2026-10-20"          # PLACEHOLDER — update when dates confirmed
+        end: "2026-11-03"
+        tier: daily
+        manual_tasks:
+          - task: "Draft standalone post about attending Web Summit + Verefy's mission"
+            frequency: "Once, by Oct 28"
+          - task: "Prepare 3-4 reply templates for AI/trust/media conversations"
+            frequency: "Once, by Nov 1"
+        keyword_searches:
+          - query: "Web Summit 2026"
+            min_likes: 5
+          - query: "Web Summit AI disinformation"
+            min_likes: 1
+          - query: "Web Summit trust safety"
+            min_likes: 1
+
+      - name: "Live event"
+        start: "2026-11-04"
+        end: "2026-11-06"
+        tier: hot
+        manual_tasks:
+          - task: "Live-post from sessions — share insights on AI, trust, media panels"
+            frequency: "3-4 posts per day during conference"
+          - task: "Reply to #WebSummit conversations about disinformation, AI, media"
+            frequency: "Check every 2 hours"
+        keyword_searches:
+          - query: "#WebSummit"
+            min_likes: 3
+          - query: "Web Summit disinformation"
+            min_likes: 0
+          - query: "Web Summit AI trust"
+            min_likes: 0
+          - query: "Web Summit fact check"
+            min_likes: 0
+
+      - name: "Post-event follow-up"
+        start: "2026-11-07"
+        end: "2026-11-14"
+        tier: daily
+        manual_tasks:
+          - task: "Publish LinkedIn recap post with key takeaways"
+            frequency: "Once, by Nov 10"
+          - task: "Follow up with new connections from event"
+            frequency: "Daily for one week"
+        keyword_searches:
+          - query: "Web Summit takeaways"
+            min_likes: 3
+
+  # -----------------------------------------------------------------
+  # Brazil Municipal Elections (October 2026)
+  # -----------------------------------------------------------------
+  # Business plan identifies Brazil as Y1 H2 market.
+  # Election disinformation peaks create high-visibility content windows.
+  - name: "Brazil Municipal Elections 2026"
+    description: >
+      Brazilian elections drive disinformation discussion peaks. Show how
+      Verefy's multilingual pipeline handles Portuguese-language misinfo.
+      Don't take political sides — focus on detection and the time-asymmetry
+      problem.
+    phases:
+      - name: "Pre-election monitoring"
+        start: "2026-08-01"
+        end: "2026-09-30"
+        tier: daily
+        keyword_searches:
+          - query: "desinformação eleições Brasil 2026"
+            min_likes: 3
+          - query: "fake news eleições municipais"
+            min_likes: 3
+          - query: "Brazil election misinformation 2026"
+            min_likes: 5
+
+      - name: "Election period"
+        start: "2026-10-01"
+        end: "2026-10-31"
+        tier: hot
+        manual_tasks:
+          - task: "Post analysis thread on election misinfo patterns (weekly)"
+            frequency: "Weekly during October"
+          - task: "Track TSE (electoral court) announcements on misinfo"
+            frequency: "Daily"
+        keyword_searches:
+          - query: "desinformação eleições Brasil"
+            min_likes: 1
+          - query: "Brazil election disinformation"
+            min_likes: 3
+          - query: "TSE fake news eleições"
+            min_likes: 1
+          - query: "Brazil election false claim viral"
+            min_likes: 3
+
+  # -----------------------------------------------------------------
+  # US Midterm Elections (November 2026)
+  # -----------------------------------------------------------------
+  # Business plan notes election calendar as revenue driver.
+  # Global attention on US elections creates content opportunity.
+  - name: "US Midterm Elections 2026"
+    description: >
+      US elections generate global disinformation discussion. Demonstrate
+      relevance of Verefy's approach to the world's largest media market.
+      Position as EU-built technology with global applicability.
+      Stay strictly non-partisan.
+    phases:
+      - name: "Pre-election"
+        start: "2026-09-01"
+        end: "2026-11-02"
+        tier: daily
+        keyword_searches:
+          - query: "midterm election misinformation 2026"
+            min_likes: 10
+          - query: "election disinformation AI detection 2026"
+            min_likes: 5
+          - query: "election integrity technology"
+            min_likes: 5
+
+      - name: "Election week"
+        start: "2026-11-03"
+        end: "2026-11-10"
+        tier: hot
+        manual_tasks:
+          - task: "Real-time commentary on misinfo incidents (factual, non-partisan only)"
+            frequency: "Monitor closely on election day and days following"
+        keyword_searches:
+          - query: "midterm election misinformation"
+            min_likes: 5
+          - query: "election night false claim viral"
+            min_likes: 3
+          - query: "midterm election disinformation detected"
+            min_likes: 3

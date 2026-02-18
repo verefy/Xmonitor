@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python targeted_marketing/monitor.py:*)",
+      "WebSearch",
+      "WebFetch(domain:x.com)"
+    ]
+  }
+}
