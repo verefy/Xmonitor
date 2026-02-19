@@ -86,6 +86,24 @@ class TestExtractCompany:
         text = "Broadcom acquisition of VMware faces regulatory scrutiny"
         assert extract_company(text) == "Broadcom"
 
+    # --- Suffix-based fallback (no keyword context needed) ---
+
+    def test_suffix_medical(self):
+        text = "A new report mentions Picard Medical in the context of FDA review"
+        assert extract_company(text) == "Picard Medical"
+
+    def test_suffix_technologies(self):
+        text = "The deal involves Nexus Technologies and several partners"
+        assert extract_company(text) == "Nexus Technologies"
+
+    def test_suffix_holdings(self):
+        text = "Investors are watching Apex Holdings closely this quarter"
+        assert extract_company(text) == "Apex Holdings"
+
+    def test_suffix_no_match_generic(self):
+        text = "EU discusses new regulations on artificial intelligence"
+        assert extract_company(text) == ""
+
 
 # ---------------------------------------------------------------------------
 # Financial impact detection

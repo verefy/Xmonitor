@@ -68,14 +68,27 @@ def classify_source_tier(domain: str) -> str:
 # Patterns that suggest a company name follows or precedes.
 # Company capture: first word [A-Z][A-Za-z&.-]+, subsequent words must be
 # Title Case (uppercase then lowercase) to avoid grabbing acronyms like CEO.
+# Corporate suffixes — if a Title Case phrase ends with one of these,
+# it's almost certainly a company/org name, regardless of context.
+_CORPORATE_SUFFIXES = (
+    "Medical", "Pharma", "Pharmaceutical", "Therapeutics", "Biotech",
+    "Tech", "Technologies", "Technology", "Software", "Systems", "Solutions",
+    "Corp", "Corporation", "Inc", "Ltd", "Limited", "Group", "Holdings",
+    "Partners", "Capital", "Financial", "Finance", "Ventures", "Labs",
+    "Networks", "Security", "Dynamics", "Energy", "Logistics", "Media",
+    "Digital", "Analytics", "Robotics", "Aerospace", "Defense", "Motors",
+    "Electric", "Insurance", "Health", "Sciences",
+)
+
 _COMPANY_PATTERNS: list[re.Pattern] = [
+    # HIGH CONFIDENCE: keyword context + company name
     # "deepfake of <Company>", "impersonating <Company>"
     re.compile(
         r"(?i:deepfake|impersonat\w+|spoof\w*|phish\w*|attack\w*|breach\w*|hack\w*|targeting|target)\s+"
         r"(?:of\s+|at\s+|on\s+|against\s+)?"
         r"([A-Z][A-Za-z&.\-]+(?:\s+[A-Z][a-z][A-Za-z&.\-]*){0,2})",
     ),
-    # "<Company> CEO/stock/shares/data/breach"
+    # "<Company> keyword" — security, financial, legal, corporate actions
     re.compile(
         r"([A-Z][A-Za-z&.\-]+(?:\s+[A-Z][a-z][A-Za-z&.\-]*){0,2})\s+"
         r"(?:CEO|CFO|CTO|stock|shares|breach|data leak|hack|attack|incident|vulnerability"
@@ -87,6 +100,12 @@ _COMPANY_PATTERNS: list[re.Pattern] = [
         r"([A-Z][A-Za-z&.\-]+(?:\s+[A-Z][a-z][A-Za-z&.\-]*){0,2})(?:'s)\s+"
         r"(?:stock|share|data|security|network|system|platform|customer"
         r"|revenue|earnings|shareholder|lawsuit|merger|acquisition)",
+    ),
+    # FALLBACK: Title Case phrase ending with a corporate suffix (any context)
+    re.compile(
+        r"([A-Z][A-Za-z&.\-]+(?:\s+[A-Z][a-z][A-Za-z&.\-]*){0,2}\s+"
+        r"(?:" + "|".join(_CORPORATE_SUFFIXES) + r"))"
+        r"(?:\s|,|\.|$)",
     ),
 ]
 
