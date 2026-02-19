@@ -113,7 +113,8 @@ _COMPANY_PATTERNS: list[re.Pattern] = [
 
 def _validate_match(match: re.Match) -> str | None:
     """Validate a regex match and return the company name, or None if invalid."""
-    name = match.group(1).strip().rstrip(".")
+    # Normalize: collapse newlines/tabs/extra spaces into single spaces
+    name = " ".join(match.group(1).split()).rstrip(".")
     if name.lower() in FALSE_POSITIVES:
         return None
     first_word = name.split()[0].lower() if name.split() else ""
@@ -146,9 +147,17 @@ def extract_company(text: str, headline: str = "") -> str:
         for pattern in _COMPANY_PATTERNS:
             for match in pattern.finditer(source):
                 name = _validate_match(match)
-                if name and name.lower() not in seen:
-                    seen.add(name.lower())
-                    results.append(name)
+                if not name:
+                    continue
+                name_lower = name.lower()
+                # Skip exact duplicates
+                if name_lower in seen:
+                    continue
+                # Skip if this name contains or is contained by an existing match
+                if any(name_lower in s or s in name_lower for s in seen):
+                    continue
+                seen.add(name_lower)
+                results.append(name)
 
     return ", ".join(results)
 
