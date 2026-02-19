@@ -74,6 +74,18 @@ class TestExtractCompany:
         text = "Scammers impersonating Apple support to steal credentials"
         assert extract_company(text) == "Apple"
 
+    def test_shareholder_notice(self):
+        text = "Picard Medical shareholder notice issued by law firm"
+        assert extract_company(text) == "Picard Medical"
+
+    def test_company_lawsuit(self):
+        text = "Acme Corp lawsuit filed over patent infringement"
+        assert extract_company(text) == "Acme Corp"
+
+    def test_company_acquisition(self):
+        text = "Broadcom acquisition of VMware faces regulatory scrutiny"
+        assert extract_company(text) == "Broadcom"
+
 
 # ---------------------------------------------------------------------------
 # Financial impact detection

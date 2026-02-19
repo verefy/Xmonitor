@@ -78,12 +78,15 @@ _COMPANY_PATTERNS: list[re.Pattern] = [
     # "<Company> CEO/stock/shares/data/breach"
     re.compile(
         r"([A-Z][A-Za-z&.\-]+(?:\s+[A-Z][a-z][A-Za-z&.\-]*){0,2})\s+"
-        r"(?:CEO|CFO|CTO|stock|shares|breach|data leak|hack|attack|incident|vulnerability)",
+        r"(?:CEO|CFO|CTO|stock|shares|breach|data leak|hack|attack|incident|vulnerability"
+        r"|shareholder|lawsuit|settlement|investigation|fraud|penalty|fine|acquisition|merger"
+        r"|revenue|earnings|IPO|recall|bankrupt\w*|insolven\w*)",
     ),
     # "<Company>'s" in context
     re.compile(
         r"([A-Z][A-Za-z&.\-]+(?:\s+[A-Z][a-z][A-Za-z&.\-]*){0,2})(?:'s)\s+"
-        r"(?:stock|share|data|security|network|system|platform|customer)",
+        r"(?:stock|share|data|security|network|system|platform|customer"
+        r"|revenue|earnings|shareholder|lawsuit|merger|acquisition)",
     ),
 ]
 
