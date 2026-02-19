@@ -24,7 +24,7 @@ settings:
   lookback_hours_hot: 13
   min_likes_accounts: 2
   min_likes_search: 10
-  email_to: "filipe.altoe@verefy.ai"
+  email_to: "filipe.altoe@gmail.com"
   email_from: "Verefy Monitor <monitor@verefy.ai>"
 
 # Relevance keywords — account posts are only included if they contain

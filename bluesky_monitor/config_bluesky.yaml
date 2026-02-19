@@ -1,12 +1,34 @@
+# Verefy Bluesky Monitor — Configuration
+# ========================================
+# Monitors Bluesky for reply opportunities and competitive intelligence.
+# Targets the disinformation research community that migrated from X.
+#
+# BLUESKY ENGAGEMENT REALITY:
+# Bluesky is much smaller than X. Engagement numbers are 10-50x lower.
+# A post with 5 likes on Bluesky is equivalent to 50-100 on X.
+# Thresholds are set accordingly — do NOT raise them to X levels.
+#
+# HANDLE VERIFICATION:
+# Handles marked [VERIFY] need confirmation. Open the URL in a browser:
+# https://bsky.app/profile/{handle}
+# If it 404s, search for the person at:
+# https://bsky.app/search?q={name}
+# Some users have custom domain handles (e.g., stamos.org instead of
+# alexstamos.bsky.social). The config must use their actual handle.
+
 settings:
   lookback_hours_daily: 26
   lookback_hours_hot: 13
-  min_likes_accounts: 3
-  min_likes_search: 5
-  email_to: "filipe.altoe@verefy.ai"
+  min_likes_accounts: 0        # Bluesky engagement is very low — show all account posts
+  min_likes_search: 0          # Same — filter manually from digest until volume warrants thresholds
+  email_to: "filipe.altoe@gmail.com"
   email_from: "Verefy Bluesky Monitor <digest@buzarchitect.ai>"
 
+# Relevance keywords — account posts are only included if they contain
+# at least one of these (case-insensitive). Keyword search results skip
+# this filter since they're already topic-filtered by the query.
 relevance_keywords:
+  # Core domain
   - "disinformation"
   - "misinformation"
   - "misinfo"
@@ -15,32 +37,233 @@ relevance_keywords:
   - "fake news"
   - "fact-check"
   - "fact check"
+  - "factcheck"
   - "deepfake"
+  - "deep fake"
+  - "synthetic media"
+  - "AI-generated"
+  - "coordinated inauthentic"
+  - "information operation"
+  - "info ops"
+  - "information warfare"
+  - "foreign interference"
+  # Platform and moderation
   - "content moderation"
   - "trust and safety"
   - "trust & safety"
   - "platform integrity"
+  - "platform governance"
+  - "algorithmic amplification"
+  # Detection and verification
+  - "claim detection"
+  - "claim verification"
+  - "automated verification"
+  - "viral prediction"
+  - "virality"
+  - "early warning"
   - "prebunking"
   - "debunking"
+  - "narrative detection"
+  # Regulatory
   - "Digital Services Act"
   - "DSA"
+  - "AI Act"
   - "EDMO"
   - "election integrity"
-  - "desinformação"
-  - "coordinated inauthentic"
+  - "election interference"
+  # Impact
+  - "brand attack"
+  - "reputational risk"
+  - "impersonation"
+  # Research
   - "explainability"
+  - "XAI"
   - "computational propaganda"
+  # Portuguese / Brazilian
+  - "desinformação"
+  - "verificação"
+  - "notícia falsa"
 
 groups:
-  - name: "Disinformation Researchers (Test)"
+  # ===================================================================
+  # GROUP 1: Disinformation Researchers & Academics
+  # ===================================================================
+  # These are the accounts that LEFT X and moved here.
+  # This is the primary reason the Bluesky monitor exists.
+  - name: "Disinformation Researchers & Academics"
     tier: daily
     description: >
-      Test group — verify account fetching and keyword search work correctly.
+      Reply when they discuss detection methods, platform accountability,
+      or research findings. Your angle: researcher-to-researcher. Cite
+      your IJCAI/UMAP work. Add perspective on the intervention gap
+      (detection alone isn't enough — you need prediction + verification
+      + response generation). Never sell — contribute expertise.
+      NOTE: These are accounts that migrated FROM X. They are active here.
     accounts:
+      # ── Confirmed migrated from X ──
+      - username: katestarbird.bsky.social
+        label: "Kate Starbird (UW, crisis informatics)"         # 89K followers, very active
+      # ── Active on Bluesky ──
       - username: stamos.org
-        label: "Alex Stamos (Corridor, ex-Stanford)"
+        label: "Alex Stamos (Stanford Internet Observatory)"
+      - username: clairewardle.bsky.social
+        label: "Claire Wardle (First Draft founder)"            # [VERIFY]
+      - username: craigsilverman.bsky.social
+        label: "Craig Silverman (ProPublica)"                   # [VERIFY]
+      - username: benimmo.bsky.social
+        label: "Ben Nimmo (Meta, formerly DFRLab)"
+      - username: juliapossetti.bsky.social
+        label: "Julie Posetti (ICFJ)"                          # [VERIFY]
+      - username: dfrlab.bsky.social
+        label: "Atlantic Council DFRLab"                        # [VERIFY]
     keyword_searches:
-      - query: "disinformation detection AI"
-        min_likes: 3
+      - query: "disinformation detection"
+        min_likes: 0
+      - query: "misinformation research"
+        min_likes: 0
+      - query: "fact checking AI"
+        min_likes: 0
+      - query: "automated fact checking"
+        min_likes: 0
+      - query: "viral misinformation"
+        min_likes: 0
+      - query: "computational propaganda"
+        min_likes: 0
+      - query: "prebunking debunking"
+        min_likes: 0
 
-campaigns: []
+  # ===================================================================
+  # GROUP 2: EU Policy & Regulation
+  # ===================================================================
+  - name: "EU Policy & Regulation"
+    tier: daily
+    description: >
+      Engage when DSA enforcement, EDMO developments, or AI Act
+      implications for content moderation are discussed. Your angle:
+      regulatory alignment — Verefy is building the technology the
+      regulation envisions. Position as European deep-tech aligned
+      with EU values. Don't be partisan — be technical.
+      NOTE: EU DisinfoLab left X for Bluesky specifically. European Commission active here.
+    accounts:
+      # ── Confirmed migrated from X ──
+      - username: disinfo.eu
+        label: "EU DisinfoLab (custom domain handle)"
+      # ── Active on Bluesky ──
+      - username: ec.europa.eu
+        label: "European Commission"
+      - username: edmo.bsky.social
+        label: "European Digital Media Observatory"             # [VERIFY]
+    keyword_searches:
+      - query: "Digital Services Act"
+        min_likes: 0
+      - query: "DSA enforcement"
+        min_likes: 0
+      - query: "EDMO disinformation"
+        min_likes: 0
+      - query: "AI Act content moderation"
+        min_likes: 0
+      - query: "EU election integrity"
+        min_likes: 0
+
+  # ===================================================================
+  # GROUP 3: Trust & Safety Professionals
+  # ===================================================================
+  - name: "Trust & Safety Professionals"
+    tier: daily
+    description: >
+      Engage when platform T&S leaders discuss content moderation at
+      scale, detection latency, or limits of platform-side solutions.
+      Your angle: enterprise-side defense COMPLEMENTS platform moderation.
+      NOTE: Yoel Roth explicitly left X ("isn't on this site anymore").
+    accounts:
+      # ── Confirmed migrated from X ──
+      - username: yoyoel.com
+        label: "Yoel Roth (former Twitter T&S, now Match Group)"
+      # ── Active on Bluesky ──
+      - username: evelyndouek.bsky.social
+        label: "Evelyn Douek (Stanford, platform governance)"
+      - username: daphnek.bsky.social
+        label: "Daphne Keller (Stanford, platform regulation)"
+    keyword_searches:
+      - query: "trust safety content moderation"
+        min_likes: 0
+      - query: "platform moderation scale"
+        min_likes: 0
+      - query: "content moderation AI"
+        min_likes: 0
+
+  # ===================================================================
+  # GROUP 4: Journalism & Fact-Checking
+  # ===================================================================
+  - name: "Journalism & Fact-Checking"
+    tier: daily
+    description: >
+      Reply when journalists discuss fact-checking tools, newsroom
+      technology, AI in journalism, or misinformation challenges.
+      Your angle: practitioner empathy — you work with Polígrafo,
+      you understand newsroom constraints.
+    accounts:
+      - username: poynter.bsky.social
+        label: "Poynter Institute"                              # [VERIFY]
+      - username: fullfact.bsky.social
+        label: "Full Fact (UK)"                                 # [VERIFY]
+      - username: factcheck.afp.com
+        label: "AFP Fact Check (custom domain handle)"
+    keyword_searches:
+      - query: "fact checking newsroom"
+        min_likes: 0
+      - query: "AI journalism verification"
+        min_likes: 0
+      - query: "IFCN fact checking"
+        min_likes: 0
+      - query: "newsroom misinformation"
+        min_likes: 0
+
+  # ===================================================================
+  # GROUP 5: Self-Mentions & Brand  [HOT — 2x/day]
+  # ===================================================================
+  - name: "Self-Mentions & Brand"
+    tier: hot
+    description: >
+      Any mention of Verefy, Filipe, or related coverage. Respond to
+      EVERYTHING. This group has min_likes: 0 everywhere — never
+      miss a mention regardless of engagement.
+    accounts: []
+    keyword_searches:
+      - query: "Verefy"
+        min_likes: 0
+      - query: "verefy.ai"
+        min_likes: 0
+      - query: "Filipe Altoe"
+        min_likes: 0
+      - query: "INESC-ID disinformation"
+        min_likes: 0
+
+# ===================================================================
+# SPECIAL CAMPAIGNS
+# ===================================================================
+
+campaigns:
+
+  # -----------------------------------------------------------------
+  # PhD Defense & LinkedIn Launch (Q2 2026)
+  # -----------------------------------------------------------------
+  - name: "PhD Defense & LinkedIn Launch"
+    description: >
+      Post-defense: cross-post announcement to Bluesky. The research
+      community that moved here will amplify it.
+    phases:
+      - name: "Post-defense activation"
+        start: "2026-06-01"          # PLACEHOLDER — update when confirmed
+        end: "2026-06-14"
+        tier: hot
+        manual_tasks:
+          - task: "Cross-post PhD defense announcement to Bluesky"
+            frequency: "Once, day after defense"
+          - task: "Reply to congratulations and engage with researcher responses"
+            frequency: "Daily for first week"
+        keyword_searches:
+          - query: "Filipe Altoe"
+            min_likes: 0
+          - query: "Verefy"
+            min_likes: 0
