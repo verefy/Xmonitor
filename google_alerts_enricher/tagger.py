@@ -75,9 +75,9 @@ _CORPORATE_SUFFIXES = (
     "Tech", "Technologies", "Technology", "Software", "Systems", "Solutions",
     "Corp", "Corporation", "Inc", "Ltd", "Limited", "Group", "Holdings",
     "Partners", "Capital", "Financial", "Finance", "Ventures", "Labs",
-    "Networks", "Dynamics", "Energy", "Logistics",
+    "Networks", "Dynamics", "Energy", "Logistics", "Agency",
     "Analytics", "Robotics", "Aerospace", "Defense", "Motors",
-    "Electric", "Insurance", "Sciences",
+    "Electric", "Insurance", "Sciences", "Entertainment", "Studios",
 )
 
 _COMPANY_PATTERNS: list[re.Pattern] = [
@@ -91,7 +91,7 @@ _COMPANY_PATTERNS: list[re.Pattern] = [
     # "<Company> keyword" — security, financial, legal, corporate actions
     re.compile(
         r"([A-Z][A-Za-z&.\-]+(?:\s+[A-Z][a-z][A-Za-z&.\-]*){0,2})\s+"
-        r"(?:CEO|CFO|CTO|stock|shares|breach|data leak|hack|attack|incident|vulnerability"
+        r"(?:CEO|CFO|CTO|CMO|COO|CIO|CISO|stock|shares|breach|data leak|hack|attack|incident|vulnerability"
         r"|shareholder|lawsuit|settlement|investigation|fraud|penalty|fine|acquisition|merger"
         r"|revenue|earnings|IPO|recall|bankrupt\w*|insolven\w*)",
     ),
