@@ -22,10 +22,10 @@
 settings:
   lookback_hours_daily: 26
   lookback_hours_hot: 13
-  min_likes_accounts: 5
-  min_likes_search: 20
+  min_likes_accounts: 2
+  min_likes_search: 10
   email_to: "filipe.altoe@verefy.ai"
-  email_from: "Verefy Bot <digest@buzarchitect.ai>"
+  email_from: "Verefy Monitor <monitor@verefy.ai>"
 
 # Relevance keywords — account posts are only included if they contain
 # at least one of these (case-insensitive). Keyword search results skip
@@ -113,27 +113,23 @@ groups:
         label: "Craig Silverman (ProPublica, misinfo reporter)" # [VERIFY]
       - username: alexstamos
         label: "Alex Stamos (Stanford Internet Observatory)"
-      - username: kate_starbird
-        label: "Kate Starbird (UW, crisis informatics)"         # [VERIFY]
-      - username: samanthabradshaw
-        label: "Samantha Bradshaw (Oxford Internet Institute)"  # [VERIFY]
       - username: ShortBenShort
         label: "Ben Nimmo (Meta, formerly DFRLab)"              # [VERIFY]
       - username: juliapossetti
         label: "Julie Posetti (ICFJ)"                          # [VERIFY]
     keyword_searches:
       - query: "disinformation detection AI"
-        min_likes: 10
+        min_likes: 5
       - query: "automated fact checking research"
-        min_likes: 10
-      - query: "misinformation spread prediction"
-        min_likes: 5
-      - query: "viral misinformation early detection"
-        min_likes: 5
-      - query: "explainable AI fact checking"
         min_likes: 3
+      - query: "misinformation spread prediction"
+        min_likes: 3
+      - query: "viral misinformation early detection"
+        min_likes: 3
+      - query: "explainable AI fact checking"
+        min_likes: 2
       - query: "computational propaganda detection"
-        min_likes: 5
+        min_likes: 3
 
   # ===================================================================
   # GROUP 2: EU Policy & Regulation
@@ -149,25 +145,21 @@ groups:
     accounts:
       - username: EU_Commission
         label: European Commission
-      - username: EUDisinfoLab
-        label: EU DisinfoLab
-      - username: EDMObservatory
-        label: "European Digital Media Observatory"             # [VERIFY]
-      - username: VeraJourova
-        label: "Vera Jourova (EU VP Values & Transparency)"     # [VERIFY]
+      - username: EDMO_EUI
+        label: "European Digital Media Observatory"
       - username: ThierryBreton
         label: "Thierry Breton (former EU Commissioner)"        # [VERIFY]
     keyword_searches:
       - query: "Digital Services Act enforcement 2026"
-        min_likes: 10
+        min_likes: 5
       - query: "EDMO disinformation"
-        min_likes: 5
+        min_likes: 2
       - query: "AI Act content moderation"
-        min_likes: 10
-      - query: "EU election integrity disinformation"
         min_likes: 5
+      - query: "EU election integrity disinformation"
+        min_likes: 3
       - query: "DSA platform compliance"
-        min_likes: 10
+        min_likes: 5
 
   # ===================================================================
   # GROUP 3: Journalism & Media
@@ -197,15 +189,15 @@ groups:
         label: "Polígrafo (partner — Fernando's platform)"      # [VERIFY]
     keyword_searches:
       - query: "newsroom fact checking tool AI"
-        min_likes: 5
-      - query: "AI journalism verification"
-        min_likes: 5
-      - query: "fact checker overwhelmed volume"
         min_likes: 3
+      - query: "AI journalism verification"
+        min_likes: 3
+      - query: "fact checker overwhelmed volume"
+        min_likes: 2
       - query: "automated claim verification news"
-        min_likes: 5
+        min_likes: 3
       - query: "IFCN fact checking"
-        min_likes: 5
+        min_likes: 3
 
   # ===================================================================
   # GROUP 4: Trust & Safety Professionals
@@ -220,21 +212,19 @@ groups:
       — you're solving what they can't (protecting specific orgs
       proactively).
     accounts:
-      - username: yaborel
-        label: "Yoel Roth (former Twitter T&S)"                 # [VERIFY]
       - username: evelyndouek
         label: "Evelyn Douek (Stanford, platform governance)"   # [VERIFY]
       - username: daborellekeller
         label: "Daphne Keller (Stanford, platform regulation)"  # [VERIFY]
     keyword_searches:
       - query: "trust safety content moderation scale"
-        min_likes: 10
-      - query: "platform response time misinformation hours"
         min_likes: 5
+      - query: "platform response time misinformation hours"
+        min_likes: 3
       - query: "content moderation AI scaling challenge"
-        min_likes: 10
+        min_likes: 5
       - query: "platform transparency report misinfo"
-        min_likes: 10
+        min_likes: 5
 
   # ===================================================================
   # GROUP 5: Competitor Accounts  [DAILY]

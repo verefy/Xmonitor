@@ -3,7 +3,18 @@ name: X Monitor
 on:
   schedule:
     - cron: '0 13 * * *'      # Daily full run at 13:00 UTC
-  workflow_dispatch: {}
+    - cron: '0 8 * * *'       # Hot morning run at 08:00 UTC
+    - cron: '0 20 * * *'      # Hot evening run at 20:00 UTC
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Run tier'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - hot
 
 jobs:
   monitor:
@@ -19,10 +30,21 @@ jobs:
       - name: Install dependencies
         run: pip install requests pyyaml python-dotenv
 
+      - name: Determine tier
+        id: tier
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tier=${{ inputs.tier }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.schedule }}" = "0 13 * * *" ]; then
+            echo "tier=full" >> $GITHUB_OUTPUT
+          else
+            echo "tier=hot" >> $GITHUB_OUTPUT
+          fi
+
       - name: Run X monitor
         env:
           TWITTERAPI_KEY: ${{ secrets.TWITTERAPI_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
           cd x_monitor
-          python monitor.py --tier full
+          python monitor.py --tier ${{ steps.tier.outputs.tier }}
