@@ -1,0 +1,42 @@
+t1:
+  - reuters.com
+  - apnews.com
+  - bbc.com
+  - bbc.co.uk
+  - nytimes.com
+  - washingtonpost.com
+  - wsj.com
+  - theguardian.com
+  - ft.com
+  - bloomberg.com
+  - economist.com
+  - forbes.com
+  - cnbc.com
+  - techcrunch.com
+  - wired.com
+  - arstechnica.com
+  - nature.com
+  - science.org
+  - thelancet.com
+
+t2:
+  - politico.eu
+  - politico.com
+  - thehill.com
+  - axios.com
+  - theverge.com
+  - vice.com
+  - zdnet.com
+  - cnet.com
+  - businessinsider.com
+  - insider.com
+  - theregister.com
+  - darkreading.com
+  - krebsonsecurity.com
+  - bleepingcomputer.com
+  - securityweek.com
+  - cyberscoop.com
+  - infosecurity-magazine.com
+  - helpnetsecurity.com
+  - threatpost.com
+  - scmagazine.com
