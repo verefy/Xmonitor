@@ -110,11 +110,12 @@ def main() -> None:
 
     for row, full_text in zip(rows, texts):
         source = row.get("source", "")
+        headline = row.get("headline", "")
         # Combine snippet + full text for tagging (snippet is always available)
-        tag_text = f"{row.get('headline', '')} {row.get('snippet', '')} {full_text}"
+        tag_text = f"{headline} {row.get('snippet', '')} {full_text}"
 
         source_tier = classify_source_tier(source)
-        named_company = extract_company(tag_text)
+        named_company = extract_company(tag_text, headline=headline)
         has_financial = detect_financial_impact(tag_text)
         priority = derive_priority(source_tier, named_company, has_financial)
 

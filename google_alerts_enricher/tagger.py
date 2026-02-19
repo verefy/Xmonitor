@@ -75,9 +75,9 @@ _CORPORATE_SUFFIXES = (
     "Tech", "Technologies", "Technology", "Software", "Systems", "Solutions",
     "Corp", "Corporation", "Inc", "Ltd", "Limited", "Group", "Holdings",
     "Partners", "Capital", "Financial", "Finance", "Ventures", "Labs",
-    "Networks", "Security", "Dynamics", "Energy", "Logistics", "Media",
-    "Digital", "Analytics", "Robotics", "Aerospace", "Defense", "Motors",
-    "Electric", "Insurance", "Health", "Sciences",
+    "Networks", "Dynamics", "Energy", "Logistics",
+    "Analytics", "Robotics", "Aerospace", "Defense", "Motors",
+    "Electric", "Insurance", "Sciences",
 )
 
 _COMPANY_PATTERNS: list[re.Pattern] = [
@@ -102,38 +102,55 @@ _COMPANY_PATTERNS: list[re.Pattern] = [
         r"|revenue|earnings|shareholder|lawsuit|merger|acquisition)",
     ),
     # FALLBACK: Title Case phrase ending with a corporate suffix (any context)
+    # Limited to 1-2 words + suffix to avoid grabbing headline fragments.
     re.compile(
-        r"([A-Z][A-Za-z&.\-]+(?:\s+[A-Z][a-z][A-Za-z&.\-]*){0,2}\s+"
+        r"([A-Z][A-Za-z&.\-]+(?:\s+[A-Z][a-z][A-Za-z&.\-]*){0,1}\s+"
         r"(?:" + "|".join(_CORPORATE_SUFFIXES) + r"))"
         r"(?:\s|,|\.|$)",
     ),
 ]
 
 
-def extract_company(text: str) -> str:
-    """Extract the most likely company name from article text.
+def _validate_match(match: re.Match) -> str | None:
+    """Validate a regex match and return the company name, or None if invalid."""
+    name = match.group(1).strip().rstrip(".")
+    if name.lower() in FALSE_POSITIVES:
+        return None
+    first_word = name.split()[0].lower() if name.split() else ""
+    if first_word in {"and", "or", "but", "the", "for", "with", "from",
+                      "this", "that", "how", "why", "what", "when", "its",
+                      "new", "all", "not", "are", "was", "has", "had",
+                      "will", "can", "may", "who", "our", "any", "another",
+                      "some", "most", "every", "each", "both", "many",
+                      "several", "after", "before", "while", "where",
+                      "about", "into", "over", "under", "between"}:
+        return None
+    if len(name) < 2:
+        return None
+    return name
 
-    Returns a single company name or empty string.
+
+def extract_company(text: str, headline: str = "") -> str:
+    """Extract company names from headline and text.
+
+    Checks the headline first (higher signal), then the full text.
+    Returns comma-separated company names (deduplicated, headline matches first),
+    or empty string if none found.
     """
-    if not text:
-        return ""
-    for pattern in _COMPANY_PATTERNS:
-        match = pattern.search(text)
-        if match:
-            name = match.group(1).strip().rstrip(".")
-            if name.lower() in FALSE_POSITIVES:
-                continue
-            # Reject if the first word is a common English word
-            first_word = name.split()[0].lower() if name.split() else ""
-            if first_word in {"and", "or", "but", "the", "for", "with", "from",
-                              "this", "that", "how", "why", "what", "when", "its",
-                              "new", "all", "not", "are", "was", "has", "had",
-                              "will", "can", "may", "who", "our", "any"}:
-                continue
-            if len(name) < 2:
-                continue
-            return name
-    return ""
+    seen: set[str] = set()
+    results: list[str] = []
+
+    for source in (headline, text):
+        if not source:
+            continue
+        for pattern in _COMPANY_PATTERNS:
+            for match in pattern.finditer(source):
+                name = _validate_match(match)
+                if name and name.lower() not in seen:
+                    seen.add(name.lower())
+                    results.append(name)
+
+    return ", ".join(results)
 
 
 # ---------------------------------------------------------------------------

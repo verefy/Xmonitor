@@ -104,6 +104,30 @@ class TestExtractCompany:
         text = "EU discusses new regulations on artificial intelligence"
         assert extract_company(text) == ""
 
+    # --- Multiple companies ---
+
+    def test_multiple_companies(self):
+        text = (
+            "Pfizer breach exposed data. Meanwhile Tesla stock dropped 5%. "
+            "Acme Corp announced new partnerships."
+        )
+        result = extract_company(text)
+        assert "Pfizer" in result
+        assert "Tesla" in result
+        assert "Acme Corp" in result
+
+    def test_headline_priority_over_body(self):
+        headline = "Sprout Social Expands Reddit Partnership"
+        body = "Scatena Media Group launched a new brand"
+        # Headline matches come first, even if headline has no keyword match
+        result = extract_company(body, headline=headline)
+        assert "Scatena Media Group" in result
+
+    def test_deduplication(self):
+        text = "Pfizer breach reported. Another Pfizer incident confirmed."
+        result = extract_company(text)
+        assert result.count("Pfizer") == 1
+
 
 # ---------------------------------------------------------------------------
 # Financial impact detection
