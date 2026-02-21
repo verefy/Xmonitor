@@ -15,6 +15,16 @@
 # https://bsky.app/search?q={name}
 # Some users have custom domain handles (e.g., stamos.org instead of
 # alexstamos.bsky.social). The config must use their actual handle.
+#
+# CHANGELOG:
+# 2026-02-21: Noise reduction pass based on Feb 20-21 digest analysis
+#   - Group 1: Dropped "fact checking AI" (too broad — caught AI skepticism,
+#     AI-replacing-jobs discourse). Added "claim verification AI" + "AI fact verification".
+#   - Group 2: Replaced "DSA enforcement" → "DSA platform enforcement" to avoid
+#     matching Democratic Socialists of America. Added languages filter (en, pt).
+#   - Group 3: Replaced "content moderation AI" → "content moderation scale" +
+#     "trust safety detection". Added handle_exclude for ActivityPub bridge bots.
+#   - Group 5: Replaced bare "Verefy" → "Verefy AI" to filter "verify" typos.
 
 settings:
   lookback_hours_daily: 26
@@ -121,8 +131,10 @@ groups:
         min_likes: 0
       - query: "misinformation research"
         min_likes: 0
-      - query: "fact checking AI"
-        min_likes: 0
+      # ✂️ REMOVED: "fact checking AI" — too broad, caught AI skepticism hot takes,
+      #    AI-replacing-jobs posts, general AI rants (Justin McElroy, TecMysT, Ben Hall,
+      #    LaurelLeaves across Feb 20-21 digests). "automated fact checking" below
+      #    already covers the domain-relevant subset.
       - query: "automated fact checking"
         min_likes: 0
       - query: "viral misinformation"
@@ -130,6 +142,11 @@ groups:
       - query: "computational propaganda"
         min_likes: 0
       - query: "prebunking debunking"
+        min_likes: 0
+      # ✅ ADDED: More precise replacements for dropped "fact checking AI"
+      - query: "claim verification AI"
+        min_likes: 0
+      - query: "AI fact verification"
         min_likes: 0
 
   # ===================================================================
@@ -144,6 +161,12 @@ groups:
       regulation envisions. Position as European deep-tech aligned
       with EU values. Don't be partisan — be technical.
       NOTE: EU DisinfoLab left X for Bluesky specifically. European Commission active here.
+    # ✅ ADDED: Language filter — drops German, Italian, French posts we can't
+    # engage with authentically (Maja Göpel, coffeeholic, Anis, Valigia Blu,
+    # FluxFM, Little Think Tank across Feb 20-21 digests — ~1/3 of group output)
+    languages:
+      - "en"
+      - "pt"
     accounts:
       # ── Confirmed migrated from X ──
       - username: disinfo.eu
@@ -156,7 +179,10 @@ groups:
     keyword_searches:
       - query: "Digital Services Act"
         min_likes: 0
-      - query: "DSA enforcement"
+      # ✏️ CHANGED: "DSA enforcement" → "DSA platform enforcement"
+      # Reason: bare "DSA enforcement" matched Democratic Socialists of America
+      # (Dave Infante's Richmond DSA rally post, Feb 21 digest)
+      - query: "DSA platform enforcement"
         min_likes: 0
       - query: "EDMO disinformation"
         min_likes: 0
@@ -175,6 +201,13 @@ groups:
       scale, detection latency, or limits of platform-side solutions.
       Your angle: enterprise-side defense COMPLEMENTS platform moderation.
       NOTE: Yoel Roth explicitly left X ("isn't on this site anymore").
+    # ✅ ADDED: Exclude ActivityPub bridge bot handles that repost content
+    # from other platforms (SearchEngine bot, score 0, pure noise in Feb 21 digest)
+    # NOTE: This requires the Python script to support handle_exclude filtering.
+    # If not yet implemented, add a simple substring check in the filter step.
+    handle_exclude:
+      - ".activitypub."
+      - ".brid.gy"
     accounts:
       # ── Confirmed migrated from X ──
       - username: yoyoel.com
@@ -189,7 +222,13 @@ groups:
         min_likes: 0
       - query: "platform moderation scale"
         min_likes: 0
-      - query: "content moderation AI"
+      # ✏️ CHANGED: "content moderation AI" → "content moderation scale" + "trust safety detection"
+      # Reason: "content moderation AI" pulled user complaints about being moderated
+      # (floyd NSFW joke Feb 20, Pinterest reshares, general platform gripes).
+      # New terms target systems-level T&S discourse we actually want to engage with.
+      - query: "content moderation scale"
+        min_likes: 0
+      - query: "trust safety detection"
         min_likes: 0
 
   # ===================================================================
@@ -230,7 +269,11 @@ groups:
       miss a mention regardless of engagement.
     accounts: []
     keyword_searches:
-      - query: "Verefy"
+      # ✏️ CHANGED: "Verefy" → "Verefy AI"
+      # Reason: bare "Verefy" matched "verify" typos — Tor the Bull's
+      # "age verefy" Discord complaint (Feb 20 digest). "Verefy AI" is
+      # specific enough to catch real mentions while filtering misspellings.
+      - query: "Verefy AI"
         min_likes: 0
       - query: "verefy.ai"
         min_likes: 0
