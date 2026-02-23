@@ -25,6 +25,16 @@
 #   - Group 3: Replaced "content moderation AI" → "content moderation scale" +
 #     "trust safety detection". Added handle_exclude for ActivityPub bridge bots.
 #   - Group 5: Replaced bare "Verefy" → "Verefy AI" to filter "verify" typos.
+#
+# 2026-02-23: Second noise reduction pass based on Feb 22-23 digest analysis
+#   - Group 1: Bumped "misinformation research" min_likes 0 → 3. Noisiest term
+#     across all 4 digests — catches casual use of both words (TTRPG drama, PCR
+#     frustration, Discord/Persona complaints, "do your research" posts). min_likes: 3
+#     would have filtered most noise while keeping all signal (Jay Van Bavel, Tania
+#     Spencer, Philip Eil all had 4+ likes).
+#   - Group 2: Added handle_exclude for ActivityPub bridge bots (heiseonline
+#     .brid.gy duplicate) and congresstracker.bsky.social (matched "Digital Asset
+#     Sales" + "Services Act" in congressional bill text — appeared Feb 22 and 23).
 
 settings:
   lookback_hours_daily: 26
@@ -130,7 +140,11 @@ groups:
       - query: "disinformation detection"
         min_likes: 0
       - query: "misinformation research"
-        min_likes: 0
+        # ✏️ CHANGED min_likes: 0 → 3 (Feb 23). Noisiest term across 4 digests —
+        #    catches casual use of both words. min_likes: 3 filters TTRPG drama,
+        #    PCR frustration, Discord complaints while keeping genuine researchers
+        #    (Van Bavel 10♥, Spencer 4♥, Philip Eil 5♥ all clear the threshold).
+        min_likes: 3
       # ✂️ REMOVED: "fact checking AI" — too broad, caught AI skepticism hot takes,
       #    AI-replacing-jobs posts, general AI rants (Justin McElroy, TecMysT, Ben Hall,
       #    LaurelLeaves across Feb 20-21 digests). "automated fact checking" below
@@ -167,6 +181,13 @@ groups:
     languages:
       - "en"
       - "pt"
+    # ✅ ADDED (Feb 23): Exclude ActivityPub bridge bots and known false-positive accounts
+    # heiseonline .brid.gy duplicate appeared Feb 23; congresstracker matched
+    # "Digital Asset Sales" + "Services Act" in congressional bill text on Feb 22 and 23.
+    handle_exclude:
+      - ".activitypub."
+      - ".brid.gy"
+      - "congresstracker.bsky.social"
     accounts:
       # ── Confirmed migrated from X ──
       - username: disinfo.eu
