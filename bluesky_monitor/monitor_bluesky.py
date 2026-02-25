@@ -349,6 +349,8 @@ def run_pipeline(config: dict, tier: str) -> dict[str, list[Post]]:
         group_name = group.get("name", "Unnamed")
         accounts = group.get("accounts", [])
         searches = group.get("keyword_searches", [])
+        group_languages = group.get("languages")       # e.g. ["en", "pt"] or None
+        group_handle_exclude = group.get("handle_exclude")  # e.g. [".brid.gy"] or None
         log.info(
             f">>> Checking group: {group_name} "
             f"({len(accounts)} accounts, {len(searches)} searches)"
@@ -381,6 +383,32 @@ def run_pipeline(config: dict, tier: str) -> dict[str, list[Post]]:
                 except ValueError:
                     pass  # if date can't be parsed, include the post
 
+                # Handle exclusion filter
+                if group_handle_exclude:
+                    handle_lower = post.author_handle.lower()
+                    matched = next(
+                        (p for p in group_handle_exclude if p.lower() in handle_lower),
+                        None,
+                    )
+                    if matched:
+                        log.debug(
+                            f"    Filtered post by @{post.author_handle}: "
+                            f"handle matches exclude pattern '{matched}'"
+                        )
+                        continue
+
+                # Language filter
+                if group_languages:
+                    post_langs = raw.get("record", {}).get("langs") or []
+                    if post_langs and not any(
+                        lang in group_languages for lang in post_langs
+                    ):
+                        log.debug(
+                            f"    Filtered post by @{post.author_handle}: "
+                            f"language {post_langs} not in {group_languages}"
+                        )
+                        continue
+
                 if post.id in seen_ids:
                     continue
                 if post.likes < min_likes_accounts:
@@ -410,6 +438,33 @@ def run_pipeline(config: dict, tier: str) -> dict[str, list[Post]]:
             for raw in raw_posts:
                 post = normalize_post(raw, f"search:{query_text}", group_name)
                 fetched += 1
+
+                # Handle exclusion filter
+                if group_handle_exclude:
+                    handle_lower = post.author_handle.lower()
+                    matched = next(
+                        (p for p in group_handle_exclude if p.lower() in handle_lower),
+                        None,
+                    )
+                    if matched:
+                        log.debug(
+                            f"    Filtered post by @{post.author_handle}: "
+                            f"handle matches exclude pattern '{matched}'"
+                        )
+                        continue
+
+                # Language filter
+                if group_languages:
+                    post_langs = raw.get("record", {}).get("langs") or []
+                    if post_langs and not any(
+                        lang in group_languages for lang in post_langs
+                    ):
+                        log.debug(
+                            f"    Filtered post by @{post.author_handle}: "
+                            f"language {post_langs} not in {group_languages}"
+                        )
+                        continue
+
                 if post.id in seen_ids:
                     continue
                 if post.likes < per_search_min:
