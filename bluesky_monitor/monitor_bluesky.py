@@ -24,6 +24,12 @@ from pathlib import Path
 import requests
 import yaml
 
+try:
+    from langdetect import detect as _langdetect_detect, LangDetectException
+    _HAS_LANGDETECT = True
+except ImportError:
+    _HAS_LANGDETECT = False
+
 # ---------------------------------------------------------------------------
 # .env loading — works locally (python-dotenv) and in CI (native env vars)
 # ---------------------------------------------------------------------------
@@ -300,6 +306,21 @@ def since_iso(lookback_hours: int) -> str:
 # Filtering
 # ---------------------------------------------------------------------------
 
+_LANGDETECT_MIN_CHARS = 50  # langdetect is unreliable on very short text
+
+
+def _detect_language(text: str) -> str | None:
+    """Detect language of text using langdetect. Returns BCP-47 code or None."""
+    if not _HAS_LANGDETECT:
+        return None
+    if len(text) < _LANGDETECT_MIN_CHARS:
+        return None
+    try:
+        return _langdetect_detect(text)
+    except Exception:
+        return None
+
+
 def is_relevant(post: Post, keywords: list[str]) -> bool:
     """Check if post text contains any relevance keyword (case-insensitive)."""
     text_lower = post.text.lower()
@@ -400,14 +421,25 @@ def run_pipeline(config: dict, tier: str) -> dict[str, list[Post]]:
                 # Language filter
                 if group_languages:
                     post_langs = raw.get("record", {}).get("langs") or []
-                    if post_langs and not any(
-                        lang in group_languages for lang in post_langs
-                    ):
-                        log.debug(
-                            f"    Filtered post by @{post.author_handle}: "
-                            f"language {post_langs} not in {group_languages}"
-                        )
-                        continue
+                    if post_langs:
+                        if not any(
+                            lang in group_languages for lang in post_langs
+                        ):
+                            log.debug(
+                                f"    Filtered post by @{post.author_handle}: "
+                                f"language {post_langs} not in {group_languages}"
+                            )
+                            continue
+                    else:
+                        # No langs metadata — fall back to langdetect
+                        detected = _detect_language(post.text)
+                        if detected and detected not in group_languages:
+                            log.debug(
+                                f"    Filtered post by @{post.author_handle}: "
+                                f"detected language '{detected}' not in "
+                                f"{group_languages} (langs field was empty)"
+                            )
+                            continue
 
                 if post.id in seen_ids:
                     continue
@@ -456,14 +488,25 @@ def run_pipeline(config: dict, tier: str) -> dict[str, list[Post]]:
                 # Language filter
                 if group_languages:
                     post_langs = raw.get("record", {}).get("langs") or []
-                    if post_langs and not any(
-                        lang in group_languages for lang in post_langs
-                    ):
-                        log.debug(
-                            f"    Filtered post by @{post.author_handle}: "
-                            f"language {post_langs} not in {group_languages}"
-                        )
-                        continue
+                    if post_langs:
+                        if not any(
+                            lang in group_languages for lang in post_langs
+                        ):
+                            log.debug(
+                                f"    Filtered post by @{post.author_handle}: "
+                                f"language {post_langs} not in {group_languages}"
+                            )
+                            continue
+                    else:
+                        # No langs metadata — fall back to langdetect
+                        detected = _detect_language(post.text)
+                        if detected and detected not in group_languages:
+                            log.debug(
+                                f"    Filtered post by @{post.author_handle}: "
+                                f"detected language '{detected}' not in "
+                                f"{group_languages} (langs field was empty)"
+                            )
+                            continue
 
                 if post.id in seen_ids:
                     continue
