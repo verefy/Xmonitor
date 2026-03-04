@@ -136,6 +136,10 @@ groups:
         label: "Julie Posetti (ICFJ)"                          # [VERIFY]
       - username: dfrlab.bsky.social
         label: "Atlantic Council DFRLab"                        # [VERIFY]
+      - username: shayan86.bsky.social
+        label: "Shayan Sardarizadeh (BBC Verify, senior journalist)"
+      - username: ndiakopoulos.bsky.social
+        label: "Nick Diakopoulos (Northwestern, computational journalism)"
     keyword_searches:
       - query: "disinformation detection"
         min_likes: 0
@@ -269,6 +273,8 @@ groups:
         label: "Full Fact (UK)"                                 # [VERIFY]
       - username: factcheck.afp.com
         label: "AFP Fact Check (custom domain handle)"
+      - username: jamesrball.com
+        label: "James Ball (investigative journalist, author)"
     keyword_searches:
       - query: "fact checking newsroom"
         min_likes: 0
