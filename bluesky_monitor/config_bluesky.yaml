@@ -35,6 +35,10 @@
 #   - Group 2: Added handle_exclude for ActivityPub bridge bots (heiseonline
 #     .brid.gy duplicate) and congresstracker.bsky.social (matched "Digital Asset
 #     Sales" + "Services Act" in congressional bill text — appeared Feb 22 and 23).
+# 2026-03-05: Account additions and noise reduction based on Feb 27–Mar 5 digests
+#   - Group 1: Added Shayan Sardarizadeh (BBC Verify) and Nick Diakopoulos
+#     (Northwestern) to tracked accounts. Added handle_exclude for
+#     labeler-prototype.bsky.social (community-notes bot, appeared in 4+ digests).
 
 settings:
   lookback_hours_daily: 26
@@ -119,6 +123,8 @@ groups:
       (detection alone isn't enough — you need prediction + verification
       + response generation). Never sell — contribute expertise.
       NOTE: These are accounts that migrated FROM X. They are active here.
+    handle_exclude:
+      - "labeler-prototype.bsky.social"
     accounts:
       # ── Confirmed migrated from X ──
       - username: katestarbird.bsky.social
@@ -136,6 +142,10 @@ groups:
         label: "Julie Posetti (ICFJ)"                          # [VERIFY]
       - username: dfrlab.bsky.social
         label: "Atlantic Council DFRLab"                        # [VERIFY]
+      - username: shayan86.bsky.social
+        label: "Shayan Sardarizadeh (BBC Verify, senior journalist)"
+      - username: ndiakopoulos.bsky.social
+        label: "Nick Diakopoulos (Northwestern, computational journalism)"
       - username: shayan86.bsky.social
         label: "Shayan Sardarizadeh (BBC Verify, senior journalist)"
       - username: ndiakopoulos.bsky.social
