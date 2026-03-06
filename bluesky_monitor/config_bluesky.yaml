@@ -125,6 +125,7 @@ groups:
       NOTE: These are accounts that migrated FROM X. They are active here.
     handle_exclude:
       - "labeler-prototype.bsky.social"
+      - "epsteinweb.bsky.social"
     accounts:
       # ── Confirmed migrated from X ──
       - username: katestarbird.bsky.social
@@ -202,6 +203,8 @@ groups:
       - ".activitypub."
       - ".brid.gy"
       - "congresstracker.bsky.social"
+      - "epsteinweb.bsky.social"
+      - "heise.de"
     accounts:
       # ── Confirmed migrated from X ──
       - username: disinfo.eu
