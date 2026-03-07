@@ -255,6 +255,8 @@ groups:
         label: "Evelyn Douek (Stanford, platform governance)"
       - username: daphnek.bsky.social
         label: "Daphne Keller (Stanford, platform regulation)"
+      - username: benwhitelaw.bsky.social
+        label: "Ben Whitelaw (Everything in Moderation, T&S industry)"
     keyword_searches:
       - query: "trust safety content moderation"
         min_likes: 0
@@ -279,6 +281,8 @@ groups:
       technology, AI in journalism, or misinformation challenges.
       Your angle: practitioner empathy — you work with Polígrafo,
       you understand newsroom constraints.
+    handle_exclude:
+      - "triall.ai"
     accounts:
       - username: poynter.bsky.social
         label: "Poynter Institute"                              # [VERIFY]
