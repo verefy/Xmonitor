@@ -1,5 +1,5 @@
 """
-Architect X/Twitter Monitor — Daily Digest Bot
+Verefy X/Twitter Monitor — Daily Digest Bot
 
 Tracks curated accounts and keyword searches via twitterapi.io,
 filters for relevance and engagement, and sends a grouped HTML
@@ -390,7 +390,8 @@ def build_html(
     groups_with_results = len(results)
 
     is_hot = tier == "hot"
-    title = "Architect -- Hot Digest" if is_hot else "Architect -- Daily X Digest"
+    title = "Verefy X Monitor" if is_hot else "Verefy X Monitor"
+    badge = "HOT RUN" if is_hot else "FULL RUN"
     accent = "#ff6b35" if is_hot else "#638dff"
 
     html_parts = [
@@ -404,7 +405,10 @@ def build_html(
         "border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }",
         f".header {{ background: {accent}; color: #fff; padding: 24px 28px; }}",
         ".header h1 { margin: 0 0 4px 0; font-size: 20px; font-weight: 600; }",
-        ".header p { margin: 0; opacity: 0.85; font-size: 14px; }",
+        ".header .badge { display: inline-block; background: rgba(255,255,255,0.2); "
+        "font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; "
+        "margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px; }",
+        ".header p { margin: 4px 0 0 0; opacity: 0.85; font-size: 14px; }",
         ".body { padding: 20px 28px; }",
         f".group-header {{ font-size: 18px; font-weight: 600; color: #1a1a1a; "
         f"margin: 28px 0 4px 0; border-bottom: 2px solid {accent}; padding-bottom: 6px; }}",
@@ -432,8 +436,8 @@ def build_html(
         "</style></head><body>",
         "<div class='container'>",
         "<div class='header'>",
-        f"<h1>{_esc(title)}</h1>",
-        f"<p>{date_str} &middot; Reply opportunities for @bus_architect</p>",
+        f"<h1>{_esc(title)}<span class='badge'>{badge}</span></h1>",
+        f"<p>{date_str} &middot; {now.strftime('%H:%M')} UTC</p>",
         "</div>",
         "<div class='body'>",
     ]
@@ -561,7 +565,7 @@ def send_email(html: str, config: dict, tier: str, total_posts: int) -> None:
     resend_key = os.environ.get("RESEND_API_KEY", "")
     if not resend_key:
         log.error("RESEND_API_KEY not set -- skipping email send")
-        return
+        sys.exit(1)
 
     settings = config.get("settings", {})
     email_to = os.environ.get("EMAIL_TO", settings.get("email_to", ""))
@@ -569,21 +573,15 @@ def send_email(html: str, config: dict, tier: str, total_posts: int) -> None:
 
     if not email_to or not email_from:
         log.error("EMAIL_TO or EMAIL_FROM not configured")
-        return
+        sys.exit(1)
 
     now = datetime.now(timezone.utc)
     date_str = now.strftime("%A, %b %d")
 
     if total_posts == 0:
-        if tier == "hot":
-            subject = f"Architect -- Hot Digest -- {date_str} (quiet day)"
-        else:
-            subject = f"Architect -- Daily X Digest -- {date_str} (quiet day)"
+        subject = f"[X] Verefy Monitor — {date_str} — quiet day"
     else:
-        if tier == "hot":
-            subject = f"Architect -- Hot Digest -- {date_str} ({total_posts} posts)"
-        else:
-            subject = f"Architect -- Daily X Digest -- {date_str} ({total_posts} posts)"
+        subject = f"[X] Verefy Monitor — {date_str} — {total_posts} posts"
 
     payload = {
         "from": email_from,
@@ -606,6 +604,7 @@ def send_email(html: str, config: dict, tier: str, total_posts: int) -> None:
         log.info(f"Email sent successfully: {subject}")
     except Exception as exc:
         log.error(f"Failed to send email: {exc}")
+        sys.exit(1)
 
 
 # ---------------------------------------------------------------------------
@@ -613,7 +612,7 @@ def send_email(html: str, config: dict, tier: str, total_posts: int) -> None:
 # ---------------------------------------------------------------------------
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Architect X/Twitter Monitor")
+    parser = argparse.ArgumentParser(description="Verefy X/Twitter Monitor")
     parser.add_argument(
         "--tier",
         choices=["full", "hot"],
@@ -632,7 +631,7 @@ def main() -> None:
     args = parse_args()
 
     log.info("=" * 50)
-    log.info("Architect X Monitor -- starting")
+    log.info("Verefy X Monitor -- starting")
     log.info(f"  TIER: {args.tier}")
     if args.dry_run:
         log.info("  MODE: dry-run (no email)")

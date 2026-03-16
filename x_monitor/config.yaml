@@ -25,7 +25,7 @@ settings:
   min_likes_accounts: 2
   min_likes_search: 10
   email_to: "filipe.altoe@gmail.com"
-  email_from: "Verefy Monitor <monitor@verefy.ai>"
+  email_from: "Verefy X Monitor <monitor@buzarchitect.ai>"
 
 # Relevance keywords — account posts are only included if they contain
 # at least one of these (case-insensitive). Keyword search results skip
