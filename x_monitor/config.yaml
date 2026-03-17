@@ -14,6 +14,13 @@
 # - "daily" groups run 1x/day at 13:00 UTC — general monitoring
 # - Full run processes ALL groups; hot run only processes tier: hot
 #
+# CHANGELOG:
+# 2026-03-17: Fixed zero keyword search results. All queries shortened from
+#   3-5 words to 2-3 words. Twitter AND-search requires ALL words present —
+#   long queries like "viral misinformation early detection" never match in
+#   26h. Also lowered min_likes thresholds and default min_likes_search
+#   (10 → 3). Modeled after working Bluesky config which returns 20-60+/run.
+#
 # ACCOUNT HANDLE VERIFICATION:
 # Handles marked [VERIFY] need confirmation before first deploy.
 # After first run, check which accounts returned zero results — those
@@ -23,7 +30,7 @@ settings:
   lookback_hours_daily: 26
   lookback_hours_hot: 13
   min_likes_accounts: 2
-  min_likes_search: 10
+  min_likes_search: 3
   email_to: "filipe.altoe@gmail.com"
   email_from: "Verefy X Monitor <monitor@buzarchitect.ai>"
 
@@ -117,19 +124,23 @@ groups:
         label: "Ben Nimmo (Meta, formerly DFRLab)"              # [VERIFY]
       - username: juliapossetti
         label: "Julie Posetti (ICFJ)"                          # [VERIFY]
+    # CHANGED 2026-03-17: Shortened all queries from 3-5 words to 2 words.
+    # Twitter AND-search requires ALL words to appear — 3-5 word queries
+    # returned 0 results across every run. Bluesky config (2-word queries)
+    # returns 20-60+ posts/run as reference.
     keyword_searches:
-      - query: "disinformation detection AI"
-        min_likes: 5
-      - query: "automated fact checking research"
-        min_likes: 3
-      - query: "misinformation spread prediction"
-        min_likes: 3
-      - query: "viral misinformation early detection"
-        min_likes: 3
-      - query: "explainable AI fact checking"
+      - query: "disinformation detection"
         min_likes: 2
-      - query: "computational propaganda detection"
-        min_likes: 3
+      - query: "automated fact checking"
+        min_likes: 2
+      - query: "misinformation prediction"
+        min_likes: 2
+      - query: "viral misinformation"
+        min_likes: 2
+      - query: "computational propaganda"
+        min_likes: 2
+      - query: "prebunking debunking"
+        min_likes: 2
 
   # ===================================================================
   # GROUP 2: EU Policy & Regulation
@@ -150,16 +161,16 @@ groups:
       - username: ThierryBreton
         label: "Thierry Breton (former EU Commissioner)"        # [VERIFY]
     keyword_searches:
-      - query: "Digital Services Act enforcement 2026"
-        min_likes: 5
-      - query: "EDMO disinformation"
-        min_likes: 2
-      - query: "AI Act content moderation"
-        min_likes: 5
-      - query: "EU election integrity disinformation"
+      - query: "Digital Services Act"
         min_likes: 3
-      - query: "DSA platform compliance"
-        min_likes: 5
+      - query: "EDMO disinformation"
+        min_likes: 0
+      - query: "AI Act moderation"
+        min_likes: 3
+      - query: "DSA platform enforcement"
+        min_likes: 3
+      - query: "EU election disinformation"
+        min_likes: 2
 
   # ===================================================================
   # GROUP 3: Journalism & Media
@@ -188,16 +199,16 @@ groups:
       - username: Poligrafo_PT
         label: "Polígrafo (partner — Fernando's platform)"      # [VERIFY]
     keyword_searches:
-      - query: "newsroom fact checking tool AI"
-        min_likes: 3
-      - query: "AI journalism verification"
-        min_likes: 3
-      - query: "fact checker overwhelmed volume"
+      - query: "newsroom fact checking"
         min_likes: 2
-      - query: "automated claim verification news"
-        min_likes: 3
+      - query: "AI journalism verification"
+        min_likes: 2
+      - query: "claim verification"
+        min_likes: 2
       - query: "IFCN fact checking"
-        min_likes: 3
+        min_likes: 2
+      - query: "newsroom misinformation"
+        min_likes: 2
 
   # ===================================================================
   # GROUP 4: Trust & Safety Professionals
@@ -217,14 +228,14 @@ groups:
       - username: daborellekeller
         label: "Daphne Keller (Stanford, platform regulation)"  # [VERIFY]
     keyword_searches:
-      - query: "trust safety content moderation scale"
-        min_likes: 5
-      - query: "platform response time misinformation hours"
+      - query: "trust safety moderation"
         min_likes: 3
-      - query: "content moderation AI scaling challenge"
-        min_likes: 5
-      - query: "platform transparency report misinfo"
-        min_likes: 5
+      - query: "content moderation scaling"
+        min_likes: 3
+      - query: "platform transparency misinfo"
+        min_likes: 3
+      - query: "trust safety detection"
+        min_likes: 3
 
   # ===================================================================
   # GROUP 5: Competitor Accounts  [DAILY]
@@ -255,20 +266,20 @@ groups:
       Also captures new entrants. Do NOT reply — intelligence only.
       Feed insights into investor updates and positioning.
     keyword_searches:
-      - query: "Logically AI disinformation"
+      - query: "Logically AI"
+        min_likes: 0
+      - query: "Meltwater misinformation"
+        min_likes: 2
+      - query: "NewsWhip"
+        min_likes: 0
+      - query: "Blackbird AI"
+        min_likes: 0
+      - query: "disinformation startup"
         min_likes: 3
-      - query: "Meltwater misinformation monitoring"
-        min_likes: 5
-      - query: "NewsWhip fact check"
+      - query: "misinfo detection platform"
+        min_likes: 2
+      - query: "disinformation SaaS"
         min_likes: 3
-      - query: "Blackbird AI brand protection"
-        min_likes: 3
-      - query: "disinformation detection startup funding"
-        min_likes: 5
-      - query: "misinfo detection platform launch"
-        min_likes: 3
-      - query: "disinformation SaaS enterprise"
-        min_likes: 5
 
   # ===================================================================
   # GROUP 7: Enterprise Brand Attacks & Incidents  [HOT — 2x/day]
@@ -284,22 +295,22 @@ groups:
       product."
     accounts: []
     keyword_searches:
-      - query: "fake tweet stock price drop"
-        min_likes: 10
-      - query: "disinformation brand attack company"
-        min_likes: 10
-      - query: "false claim company stock market"
-        min_likes: 10
-      - query: "impersonation account brand verified"
+      - query: "fake tweet stock"
         min_likes: 5
-      - query: "coordinated inauthentic behavior targeting"
+      - query: "disinformation brand attack"
         min_likes: 5
-      - query: "deepfake CEO executive"
+      - query: "false claim stock"
         min_likes: 5
-      - query: "fake news company reputation damage"
-        min_likes: 10
-      - query: "misinformation pharmaceutical brand"
-        min_likes: 10
+      - query: "impersonation brand"
+        min_likes: 3
+      - query: "coordinated inauthentic"
+        min_likes: 3
+      - query: "deepfake CEO"
+        min_likes: 3
+      - query: "fake news reputation"
+        min_likes: 5
+      - query: "misinformation pharmaceutical"
+        min_likes: 5
 
   # ===================================================================
   # GROUP 8: Self-Mentions & Brand  [HOT — 2x/day]
@@ -317,11 +328,11 @@ groups:
         min_likes: 0
       - query: "verefy.ai"
         min_likes: 0
-      - query: "Filipe Altoe disinformation"
+      - query: "Filipe Altoe"
         min_likes: 0
-      - query: "Polígrafo AI fact checking tool"
+      - query: "Polígrafo AI"
         min_likes: 0
-      - query: "INESC-ID disinformation detection"
+      - query: "INESC-ID disinformation"
         min_likes: 0
 
 # ===================================================================
