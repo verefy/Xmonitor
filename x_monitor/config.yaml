@@ -266,13 +266,13 @@ groups:
       Also captures new entrants. Do NOT reply — intelligence only.
       Feed insights into investor updates and positioning.
     keyword_searches:
-      - query: "Logically AI"
+      - query: "Logically.ai"
         min_likes: 0
       - query: "Meltwater misinformation"
         min_likes: 2
       - query: "NewsWhip"
         min_likes: 0
-      - query: "Blackbird AI"
+      - query: "Blackbird.ai"
         min_likes: 0
       - query: "disinformation startup"
         min_likes: 3
