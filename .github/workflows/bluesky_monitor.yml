@@ -41,6 +41,13 @@ jobs:
             echo "tier=hot" >> $GITHUB_OUTPUT
           fi
 
+      - name: Restore seen posts cache
+        uses: actions/cache@v4
+        with:
+          path: bluesky_monitor/seen_posts.json
+          key: bluesky-seen-posts-${{ github.run_id }}
+          restore-keys: bluesky-seen-posts-
+
       - name: Run Bluesky monitor
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}

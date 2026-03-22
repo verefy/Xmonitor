@@ -13,6 +13,7 @@ Usage:
 """
 
 import argparse
+import json
 import logging
 import os
 import sys
@@ -328,6 +329,43 @@ def is_relevant(post: Post, keywords: list[str]) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# Cross-run dedup — persist seen post IDs between runs
+# ---------------------------------------------------------------------------
+
+SEEN_POSTS_FILE = Path(__file__).parent / "seen_posts.json"
+SEEN_POSTS_MAX_AGE_DAYS = 7
+
+
+def load_seen_posts() -> dict[str, str]:
+    """Load {post_id: iso_timestamp} from disk. Returns empty dict on error."""
+    if not SEEN_POSTS_FILE.exists():
+        return {}
+    try:
+        data = json.loads(SEEN_POSTS_FILE.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except (json.JSONDecodeError, OSError) as exc:
+        log.warning(f"Could not load seen posts file: {exc}")
+        return {}
+
+
+def save_seen_posts(seen: dict[str, str]) -> None:
+    """Save seen posts dict to disk, pruning entries older than 7 days."""
+    cutoff = datetime.now(timezone.utc) - timedelta(days=SEEN_POSTS_MAX_AGE_DAYS)
+    pruned = {}
+    for post_id, ts in seen.items():
+        try:
+            post_dt = datetime.fromisoformat(ts)
+            if post_dt >= cutoff:
+                pruned[post_id] = ts
+        except (ValueError, TypeError):
+            pruned[post_id] = ts  # keep if timestamp can't be parsed
+    SEEN_POSTS_FILE.write_text(
+        json.dumps(pruned, indent=2), encoding="utf-8"
+    )
+    log.info(f"Saved {len(pruned)} seen post IDs ({len(seen) - len(pruned)} pruned)")
+
+
+# ---------------------------------------------------------------------------
 # Main pipeline
 # ---------------------------------------------------------------------------
 
@@ -360,10 +398,14 @@ def run_pipeline(config: dict, tier: str) -> dict[str, list[Post]]:
     log.info(f"{tier_label} tier run -- processing {len(groups)} groups "
              f"(lookback {lookback_hours}h, since {since})")
 
-    seen_ids: set[str] = set()
+    # Load previously seen post IDs for cross-run dedup
+    previously_seen = load_seen_posts()
+    seen_ids: set[str] = set(previously_seen.keys())
+    new_ids: dict[str, str] = {}  # IDs found this run, to save afterwards
     results: dict[str, list[Post]] = {}
     total_fetched = 0
     total_kept = 0
+    total_cross_run_deduped = 0
     api_errors = 0
 
     for group in groups:
@@ -442,12 +484,16 @@ def run_pipeline(config: dict, tier: str) -> dict[str, list[Post]]:
                             continue
 
                 if post.id in seen_ids:
+                    if post.id in previously_seen and post.id not in new_ids:
+                        total_cross_run_deduped += 1
                     continue
                 if post.likes < min_likes_accounts:
                     continue
                 if not is_relevant(post, relevance_keywords):
                     continue
                 seen_ids.add(post.id)
+                now_iso = datetime.now(timezone.utc).isoformat()
+                new_ids[post.id] = now_iso
                 group_posts.append(post)
                 kept += 1
 
@@ -509,10 +555,14 @@ def run_pipeline(config: dict, tier: str) -> dict[str, list[Post]]:
                             continue
 
                 if post.id in seen_ids:
+                    if post.id in previously_seen and post.id not in new_ids:
+                        total_cross_run_deduped += 1
                     continue
                 if post.likes < per_search_min:
                     continue
                 seen_ids.add(post.id)
+                now_iso = datetime.now(timezone.utc).isoformat()
+                new_ids[post.id] = now_iso
                 group_posts.append(post)
                 kept += 1
 
@@ -527,7 +577,15 @@ def run_pipeline(config: dict, tier: str) -> dict[str, list[Post]]:
         if group_posts:
             results[group_name] = group_posts
 
-    log.info(f"\nTotal: {total_fetched} fetched, {total_kept} kept, {api_errors} errors")
+    log.info(
+        f"\nTotal: {total_fetched} fetched, {total_kept} kept, "
+        f"{total_cross_run_deduped} cross-run dupes skipped, {api_errors} errors"
+    )
+
+    # Save seen posts for cross-run dedup
+    previously_seen.update(new_ids)
+    save_seen_posts(previously_seen)
+
     return results
 
 

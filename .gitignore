@@ -1,2 +1,4 @@
 .env
 causal-armor*.json
+seen_posts.json
+digest_preview.html
