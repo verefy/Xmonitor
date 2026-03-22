@@ -15,6 +15,16 @@
 # - Full run processes ALL groups; hot run only processes tier: hot
 #
 # CHANGELOG:
+# 2026-03-22: Noise reduction pass based on 2 weeks of digest analysis.
+#   - Group 7: Replaced "fake news reputation" (zero enterprise hits, only
+#     political/personal disputes) with "fake news stock price" and
+#     "disinformation company brand" (min_likes: 3).
+#   - Group 8: Changed "Verefy" → "Verefy AI" to filter InterLink crypto
+#     false positives (#Verefy hashtag). Added -Fittipaldi to "Filipe Altoe"
+#     query to exclude Cassiano Altoe finance influencer list false positive.
+#   - Group 6: Confirmed "Logically.ai" and "Blackbird.ai" already fixed
+#     in prior commit (d6275e6).
+#
 # 2026-03-17: Fixed zero keyword search results. All queries shortened from
 #   3-5 words to 2-3 words. Twitter AND-search requires ALL words present —
 #   long queries like "viral misinformation early detection" never match in
@@ -307,8 +317,14 @@ groups:
         min_likes: 3
       - query: "deepfake CEO"
         min_likes: 3
-      - query: "fake news reputation"
-        min_likes: 5
+      # ✂️ REMOVED: "fake news reputation" (Mar 22). In 2 weeks of digests,
+      #    zero enterprise incidents — only political disputes and personal
+      #    grievances (South African mayor, Canadian columnist, Turkish football,
+      #    K-pop fans). Replaced with more targeted queries below.
+      - query: "fake news stock price"
+        min_likes: 3
+      - query: "disinformation company brand"
+        min_likes: 3
       - query: "misinformation pharmaceutical"
         min_likes: 5
 
@@ -324,11 +340,19 @@ groups:
       reputation management.
     accounts: []
     keyword_searches:
-      - query: "Verefy"
+      # ✏️ CHANGED: "Verefy" → "Verefy AI" (Mar 22). Bare "Verefy" matched
+      #    InterLink crypto project using #Verefy hashtag — false positive in
+      #    4+ consecutive digests. Mirrors fix applied to Bluesky config Feb 21.
+      - query: "Verefy AI"
         min_likes: 0
       - query: "verefy.ai"
         min_likes: 0
-      - query: "Filipe Altoe"
+      # ✏️ CHANGED: Added -Fittipaldi exclusion (Mar 22). twitterapi.io
+      #    advanced_search treats "Filipe Altoe" as AND (both words anywhere),
+      #    not exact phrase — matched Brazilian finance influencer list with
+      #    "Filipe Fittipaldi" posted by @cassianoma (Cassiano Altoe) in 5+
+      #    consecutive digests. -Fittipaldi uses Twitter's negation operator.
+      - query: "Filipe Altoe -Fittipaldi"
         min_likes: 0
       - query: "Polígrafo AI"
         min_likes: 0
