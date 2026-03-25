@@ -213,8 +213,10 @@ groups:
         min_likes: 2
       - query: "AI journalism verification"
         min_likes: 2
-      - query: "claim verification"
-        min_likes: 2
+      - query: "claim verified false"
+        min_likes: 3
+      - query: "fact check verification"
+        min_likes: 3
       - query: "IFCN fact checking"
         min_likes: 2
       - query: "newsroom misinformation"
