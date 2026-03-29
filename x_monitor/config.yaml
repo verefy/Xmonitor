@@ -215,7 +215,7 @@ groups:
         min_likes: 2
       - query: "claim verified false"
         min_likes: 3
-      - query: "fact check verification"
+      - query: "fact check verified false"
         min_likes: 3
       - query: "IFCN fact checking"
         min_likes: 2
@@ -266,6 +266,14 @@ groups:
         label: "NewsWhip ($11.8M/yr, closest to fact-checking)" # [VERIFY]
       - username: blackbird_ai
         label: "Blackbird.AI (enterprise brand protection)"     # [VERIFY]
+      - username: meltwater
+        label: "Meltwater (media monitoring)"                   # [VERIFY]
+      - username: ChainPatrol
+        label: "ChainPatrol (brand impersonation protection, crypto/Web3)"
+      - username: polsia
+        label: "Polsia (claim analysis, positions against Blackbird.ai pricing)"
+      - username: VerigateAI
+        label: "VerigateAI / TrustFace (real-time deepfake detection, video calls)"
     keyword_searches: []
 
   # ===================================================================
@@ -292,6 +300,12 @@ groups:
         min_likes: 2
       - query: "disinformation SaaS"
         min_likes: 3
+      - query: "Cyabra"
+        min_likes: 0
+      - query: "Veracity AI disinformation"
+        min_likes: 0
+      - query: "TrustFace deepfake"
+        min_likes: 0
 
   # ===================================================================
   # GROUP 7: Enterprise Brand Attacks & Incidents  [HOT — 2x/day]
